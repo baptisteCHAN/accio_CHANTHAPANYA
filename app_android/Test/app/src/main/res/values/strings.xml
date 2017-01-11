@@ -15,4 +15,6 @@
     <string name="numero">N°</string>
     <string name="street">Rue</string>
     <string name="city">Ville</string>
+    <string name="connection">Connectez vous !</string>
+    <string name="reserver">Reserver</string>
 </resources>

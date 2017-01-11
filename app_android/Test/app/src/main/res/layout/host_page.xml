@@ -51,8 +51,23 @@
             android:id="@+id/password"
             android:layout_weight="0.56" />
     </LinearLayout>
-
     <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <Button
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:text="@string/connection"
+        android:layout_width="121dp"
+        android:layout_height="35dp"
+        android:id="@+id/buttonLogin"
+        android:onClick="onLogin"
+        android:layout_weight="0.20" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_gravity="center"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,6 +80,7 @@
             android:id="@+id/no_account"
             android:text="@string/no_account" />
 
+
         <Button
             android:textColor="@color/white"
             android:background="@color/colorPrimary"
@@ -72,7 +88,10 @@
             android:layout_width="121dp"
             android:layout_height="35dp"
             android:id="@+id/button"
+            android:onClick="navigationToRegisterPage"
             android:layout_weight="0.20" />
+
+
 
     </LinearLayout>
 </LinearLayout>

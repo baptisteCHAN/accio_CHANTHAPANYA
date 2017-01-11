@@ -1,11 +1,13 @@
 package com.example.damien.test;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,7 +21,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String urlRegister = "192.168.12.79";
+    private static final String urlRegister = "http://192.168.12.79";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
 
@@ -64,7 +66,12 @@ public class RegisterActivity extends AppCompatActivity {
         EditText passwordET = (EditText)findViewById(R.id.password);
         EditText confirmPasswordET = (EditText)findViewById(R.id.confirm_pass);
 
-        if(!confirmPasswordET.getText().equals(passwordET.getText())){
+        if(TextUtils.isEmpty(loginET.getText().toString().trim()) || TextUtils.isEmpty(nameET.getText().toString().trim()) || TextUtils.isEmpty(firstNameET.getText().toString().trim()) || TextUtils.isEmpty(confirmPasswordET.getText().toString().trim()) || TextUtils.isEmpty(passwordET.getText().toString().trim())){
+            Toast.makeText(getApplicationContext(), "Remplissez tous les champs", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!passwordET.getText().toString().equals(confirmPasswordET.getText().toString())){
             Toast.makeText(getApplicationContext(), "Different password", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -83,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
-
+                navigationToHostPage();
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
@@ -94,9 +101,15 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occcured! "+statusCode + "  "+error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),  "  "+error, Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    public void navigationToHostPage(){
+        Intent RegisterIntent = new Intent(getApplicationContext(),loginActivity.class);
+        RegisterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(RegisterIntent);
     }
 }

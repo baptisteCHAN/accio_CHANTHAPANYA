@@ -1,5 +1,6 @@
 package com.example.damien.test;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -43,8 +44,8 @@ public class loginActivity extends AppCompatActivity {
         client.post(urlLogin, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getApplicationContext(),"Connexion réussi", Toast.LENGTH_SHORT).show();
+                navigationToReservationPage();
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
@@ -55,9 +56,21 @@ public class loginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occcured! "+statusCode + "  "+error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "  "+error, Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    public void navigationToRegisterPage(View view){
+        Intent loginIntent = new Intent(getApplicationContext(),RegisterActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(loginIntent);
+    }
+
+    public void navigationToReservationPage(){
+        Intent loginIntent = new Intent(getApplicationContext(),ReservationActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(loginIntent);
     }
 }
