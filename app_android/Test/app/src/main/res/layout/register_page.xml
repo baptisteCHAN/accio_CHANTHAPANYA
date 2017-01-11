@@ -3,129 +3,57 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/name"
+        android:layout_weight="0.56" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/name_text"
-            android:text="@string/name" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:id="@+id/name"
-            android:layout_weight="0.56" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/first_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/first_name"
+        android:layout_weight="0.56" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/first_name_text"
-            android:text="@string/first_name" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:id="@+id/first_name"
-            android:layout_weight="0.56" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/date_of_birth"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/date_of_birth"
+        android:layout_weight="0.56" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/birth_text"
-            android:text="@string/date_of_birth" />
-
-        <DatePicker
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/birthdate"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/login"
+        android:layout_weight="0.56" />
 
-        <TextView
-            android:text="@string/login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/login_text"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/login"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password"
+        android:layout_weight="0.56" />
 
-        <TextView
-            android:text="@string/password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pass_text"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/password"
-            android:layout_weight="0.56" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <EditText
+        android:hint="@string/confirm_pass"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/confirm_pass_text"
-        android:text="@string/confirm_pass" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/confirm_pass"
-            android:layout_weight="0.56" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/confirm_pass"
+        android:layout_weight="0.56" />
 
     <Button
         android:text="@string/send"
