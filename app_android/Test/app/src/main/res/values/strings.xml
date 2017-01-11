@@ -12,7 +12,6 @@
     <string name="hour">Heure d\'arrivée</string>
     <string name="departure">Départ</string>
     <string name="arrival">Arrivée</string>
-
     <string name="search_result_activity">Résultat de la recherche</string>
 
     <plurals name="search_result">
@@ -20,4 +19,9 @@
         <item quantity="zero">Pas de trajet trouvé.</item>
         <item quantity="other">%d trajets trouvés.</item>
     </plurals>
+    <string name="numero">N°</string>
+    <string name="street">Rue</string>
+    <string name="city">Ville</string>
+    <string name="connection">Connectez vous !</string>
+    <string name="reserver">Reserver</string>
 </resources>

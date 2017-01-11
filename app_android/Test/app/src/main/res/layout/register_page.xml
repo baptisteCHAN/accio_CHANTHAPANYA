@@ -56,9 +56,12 @@
         android:layout_weight="0.56" />
 
     <Button
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
         android:text="@string/send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onSubscribe"
         android:id="@+id/button2"/>
 
 
