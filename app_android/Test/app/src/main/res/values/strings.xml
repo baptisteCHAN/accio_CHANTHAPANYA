@@ -12,4 +12,7 @@
     <string name="hour">Heure d\'arrivée</string>
     <string name="departure">Départ</string>
     <string name="arrival">Arrivée</string>
+    <string name="numero">N°</string>
+    <string name="street">Rue</string>
+    <string name="city">Ville</string>
 </resources>
