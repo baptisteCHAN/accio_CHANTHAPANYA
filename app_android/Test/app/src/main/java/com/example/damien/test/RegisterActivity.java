@@ -21,7 +21,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String urlRegister = "http://192.168.12.79";
+    private static final String urlRegister = "http://192.168.12.79:3000/user";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
 
