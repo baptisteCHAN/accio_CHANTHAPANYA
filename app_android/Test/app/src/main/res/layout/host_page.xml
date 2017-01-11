@@ -5,20 +5,32 @@
     android:background="@color/colorAccent">
 
 
-    <EditText
-        android:hint="@string/login"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/login" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:hint="@string/password"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
+        <TextView
+            android:textColor="@color/white"
+            android:text="@string/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_text"
+            android:layout_weight="1" />
+
+        <EditText
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/login"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -43,15 +55,15 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <Button
-        android:textColor="@color/white"
-        android:background="@color/colorPrimary"
-        android:text="@string/connection"
-        android:layout_width="121dp"
-        android:layout_height="35dp"
-        android:id="@+id/buttonLogin"
-        android:onClick="onLogin"
-        android:layout_weight="0.20" />
+        <Button
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:text="@string/connection"
+            android:layout_width="121dp"
+            android:layout_height="35dp"
+            android:id="@+id/buttonLogin"
+            android:onClick="onLogin"
+            android:layout_weight="0.20" />
 
     </LinearLayout>
     <LinearLayout
@@ -82,5 +94,4 @@
 
 
     </LinearLayout>
-
 </LinearLayout>

@@ -1,14 +1,26 @@
 package com.example.damien.test;
 
+import android.app.DownloadManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Damien on 11/01/2017.
@@ -20,6 +32,7 @@ public class SearchResultActivity extends AppCompatActivity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    private static final String urlGetTrajet = "http://192.168.12.79";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,5 +83,41 @@ public class SearchResultActivity extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
+    }
+
+
+    public void onResearch(){
+        RequestParams params = new RequestParams();
+        invokeWS(params);
+    }
+
+    public void invokeWS(RequestParams params){
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(urlGetTrajet, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONArray jsonArray = new JSONArray(new String(responseBody));
+                    for(int i=0;i<jsonArray.length();i++){
+
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                if(statusCode == 404){
+                    Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+                }
+                else if(statusCode == 500){
+                    Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),  "  "+error, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
