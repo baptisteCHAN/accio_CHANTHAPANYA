@@ -29,39 +29,15 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_page);
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-            }
-        }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
-            }
-        }
-    }
+
 
     public void onSubscribe(View view){
         EditText nameET = (EditText) findViewById(R.id.name);
         EditText firstNameET = (EditText)findViewById(R.id.first_name);
-        EditText birthDateET = (EditText)findViewById(R.id.date_of_birth);
+        EditText birthdateET = (EditText)findViewById(R.id.date_of_birth);
         EditText loginET = (EditText)findViewById(R.id.login);
         EditText passwordET = (EditText)findViewById(R.id.password);
         EditText confirmPasswordET = (EditText)findViewById(R.id.confirm_pass);
@@ -78,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.put("name", nameET.getText());
         params.put("firstName", firstNameET.getText());
-        params.put("birthday", birthDateET.getText());
+        params.put("birthday", birthdateET.getText());
         params.put("login", loginET.getText());
         params.put("password", passwordET.getText());
         invokeWS(params);

@@ -1,6 +1,7 @@
 package com.example.damien.test;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,8 +21,7 @@ public class ReservationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reservation);
-
+        setContentView(R.layout.reservation_page);
     }
 
     public void onReservation(View view){
@@ -56,6 +56,7 @@ public class ReservationActivity extends Activity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
+                navigationToReservationView();
 
             }
             @Override
@@ -71,6 +72,12 @@ public class ReservationActivity extends Activity {
                 }
             }
         });
+    }
+
+    public void navigationToReservationView(){
+        Intent RegisterIntent = new Intent(getApplicationContext(),loginActivity.class);
+        RegisterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(RegisterIntent);
     }
 }
 

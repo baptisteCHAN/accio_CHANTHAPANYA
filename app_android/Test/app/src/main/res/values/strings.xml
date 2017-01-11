@@ -24,6 +24,8 @@
     <string name="city">Ville</string>
     <string name="connection">Connectez vous !</string>
     <string name="reserver">Reserver</string>
-
+    <string name="reservationView">Voir ses réservations</string>
+    <string name="logOut">se déconnecter</string>
     <string name="title_activity_maps">Map</string>
+    <string name="idFile">idFile</string>
 </resources>
