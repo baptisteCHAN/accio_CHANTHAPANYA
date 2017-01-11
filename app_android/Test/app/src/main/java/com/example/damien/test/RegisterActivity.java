@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onSubscribe(View view){
         EditText nameET = (EditText) findViewById(R.id.name);
         EditText firstNameET = (EditText)findViewById(R.id.first_name);
-        DatePicker birthDateDP = (DatePicker)findViewById(R.id.birthdate);
+        EditText birthDateET = (EditText)findViewById(R.id.date_of_birth);
         EditText loginET = (EditText)findViewById(R.id.login);
         EditText passwordET = (EditText)findViewById(R.id.password);
         EditText confirmPasswordET = (EditText)findViewById(R.id.confirm_pass);
@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.put("name", nameET.getText());
         params.put("firstName", firstNameET.getText());
-        params.put("birthday", String.valueOf(birthDateDP.getDayOfMonth())+"-"+String.valueOf(birthDateDP.getMonth()+"-"+String.valueOf(birthDateDP.getYear())));
+        params.put("birthday", birthDateET.getText());
         params.put("login", loginET.getText());
         params.put("password", passwordET.getText());
         invokeWS(params);

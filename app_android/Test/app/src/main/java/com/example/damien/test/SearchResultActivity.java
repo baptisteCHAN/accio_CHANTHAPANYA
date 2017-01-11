@@ -2,9 +2,14 @@ package com.example.damien.test;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,11 +31,11 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.search_result);
-        int count = 0;
+        /*int count = 0;
         Resources res = getResources();
         String tripsFound = res.getQuantityString(R.plurals.search_result, count, count);
         TextView txt = (TextView) findViewById(R.id.result_count);
-        txt.setText(tripsFound);
+        txt.setText(tripsFound);*/
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandList);
@@ -42,6 +47,9 @@ public class SearchResultActivity extends AppCompatActivity {
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
+        MapView map = (MapView) findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
 
     }
 
@@ -70,5 +78,14 @@ public class SearchResultActivity extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
+    }
+
+    public void onResume(){
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
 }

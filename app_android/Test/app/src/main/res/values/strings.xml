@@ -24,4 +24,6 @@
     <string name="city">Ville</string>
     <string name="connection">Connectez vous !</string>
     <string name="reserver">Reserver</string>
+
+    <string name="title_activity_maps">Map</string>
 </resources>
