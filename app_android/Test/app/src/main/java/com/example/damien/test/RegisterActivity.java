@@ -42,14 +42,12 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     public void onSubscribe(View view){
-        EditText nameET = (EditText) findViewById(R.id.name);
-        EditText firstNameET = (EditText)findViewById(R.id.first_name);
-        EditText birthdateET = (EditText)findViewById(R.id.date_of_birth);
+        EditText emailET = (EditText) findViewById(R.id.email);
         EditText loginET = (EditText)findViewById(R.id.login);
         EditText passwordET = (EditText)findViewById(R.id.password);
         EditText confirmPasswordET = (EditText)findViewById(R.id.confirm_pass);
 
-        if(TextUtils.isEmpty(loginET.getText().toString().trim()) || TextUtils.isEmpty(nameET.getText().toString().trim()) || TextUtils.isEmpty(firstNameET.getText().toString().trim()) || TextUtils.isEmpty(confirmPasswordET.getText().toString().trim()) || TextUtils.isEmpty(passwordET.getText().toString().trim())){
+        if(TextUtils.isEmpty(loginET.getText().toString().trim()) || TextUtils.isEmpty(emailET.getText().toString().trim()) || TextUtils.isEmpty(confirmPasswordET.getText().toString().trim()) || TextUtils.isEmpty(passwordET.getText().toString().trim())){
             Toast.makeText(getApplicationContext(), "Remplissez tous les champs", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -60,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         try {
             JSONObject jsonParams = new JSONObject();
-            jsonParams.put("email", nameET.getText());
+            jsonParams.put("email", emailET.getText());
             jsonParams.put("username", loginET.getText());
             jsonParams.put("passwordSalt", passwordET.getText());
             jsonParams.put("role", "0");
