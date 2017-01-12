@@ -78,28 +78,4 @@ public class HomeActivity extends AppCompatActivity {
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeIntent);
     }
-
-    private class UpdateRoadTask extends AsyncTask<Object, Void, Road> {
-
-        protected Road doInBackground(Object... params) {
-            @SuppressWarnings("unchecked")
-            ArrayList<GeoPoint> waypoints = (ArrayList<GeoPoint>)params[0];
-            RoadManager roadManager = new OSRMRoadManager(getApplicationContext());
-
-
-            return roadManager.getRoad(waypoints);
-        }
-        @Override
-        protected void onPostExecute(Road result) {
-            Road road = result;
-            // showing distance and duration of the road
-
-            if(road.mStatus != Road.STATUS_OK)
-                Toast.makeText(getApplicationContext(), "Error when loading the road - status="+road.mStatus, Toast.LENGTH_SHORT).show();
-            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-            map.getOverlays().add(roadOverlay);
-            map.invalidate();
-            //updateUIWithRoad(result);
-        }
-    }
 }
