@@ -2,6 +2,8 @@ package com.example.damien.test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +13,13 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -25,27 +34,44 @@ public class ReservationActivity extends Activity {
     }
 
     public void onReservation(View view){
-        EditText numeroArrival = (EditText)findViewById(R.id.numeroArrival);
-        EditText numeroDeparture = (EditText)findViewById(R.id.numeroDeparture);
-        EditText streetArrival = (EditText)findViewById(R.id.streetArrival);
-        EditText streetDeparture = (EditText)findViewById(R.id.streetDeparture);
-        EditText cityArrival = (EditText)findViewById(R.id.cityArrival);
-        EditText cityDeparture = (EditText)findViewById(R.id.cityDeparture);
+        EditText arrivalAddressET = (EditText)findViewById(R.id.arrivalAddress);
+        EditText departureAddressET = (EditText)findViewById(R.id.departureAddress);
 
-        if(TextUtils.isEmpty(numeroArrival.getText().toString().trim()) || TextUtils.isEmpty(numeroDeparture.getText().toString().trim()) || TextUtils.isEmpty(streetArrival.getText().toString().trim()) ||
-                TextUtils.isEmpty(streetDeparture.getText().toString().trim()) || TextUtils.isEmpty(cityArrival.getText().toString().trim()) || TextUtils.isEmpty(cityDeparture.getText().toString().trim())) {
+
+        if(TextUtils.isEmpty(departureAddressET.getText().toString().trim()) || TextUtils.isEmpty(arrivalAddressET.getText().toString().trim())) {
             Toast.makeText(getApplicationContext(), "Remplissez tous les champs", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RequestParams params = new RequestParams();
-        params.put("numeroArrival",numeroArrival);
-        params.put("numeroDeparture",numeroDeparture);
-        params.put("streetArrival", streetArrival);
-        params.put("streetDeparture", streetDeparture);
-        params.put("cityArrival", cityArrival);
-        params.put("cityDeparture", cityDeparture);
-        invokeWS(params);
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> addressDeparture = geocoder.getFromLocationName(departureAddressET.getText().toString(), 1);
+            List<Address> addressArrival = geocoder.getFromLocationName(arrivalAddressET.getText().toString(), 1);
+
+            if(addressDeparture.isEmpty()){
+                Toast.makeText(getApplicationContext(), "adresse de départ inconnue", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(addressArrival.isEmpty()){
+                Toast.makeText(getApplicationContext(), "adresse d'arrivée inconnue", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            RequestParams params = new RequestParams();
+            JSONObject jsonParams = new JSONObject();
+            jsonParams.put("lat", addressDeparture.get(0).getLatitude());
+            jsonParams.put("lon", addressDeparture.get(0).getLongitude());
+            jsonParams.put("lat", addressArrival.get(0).getLatitude());
+            jsonParams.put("lon", addressArrival.get(0).getLongitude());
+            //invokeWS(params);
+
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
+
 
 
     }
@@ -57,7 +83,6 @@ public class ReservationActivity extends Activity {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
                 navigationToReservationView();
-
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {

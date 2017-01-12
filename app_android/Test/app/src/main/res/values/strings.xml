@@ -19,9 +19,8 @@
         <item quantity="zero">Pas de trajet trouvé.</item>
         <item quantity="other">%d trajets trouvés.</item>
     </plurals>
-    <string name="numero">N°</string>
-    <string name="street">Rue</string>
-    <string name="city">Ville</string>
+    <string name="departureAddress">adresse de départ</string>
+    <string name="arrivalAddress">adresse d\'arrivée</string>
     <string name="connection">Connectez vous !</string>
     <string name="reserver">Reserver</string>
     <string name="reservationView">Voir ses réservations</string>
