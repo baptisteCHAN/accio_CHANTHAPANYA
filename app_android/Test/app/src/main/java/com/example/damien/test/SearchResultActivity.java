@@ -38,11 +38,13 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * Created by Damien on 11/01/2017.
@@ -58,6 +60,8 @@ public class SearchResultActivity extends AppCompatActivity {
     private Trip currentTrip = null;
     private MapView mMapView;
     private MapController mMapController;
+    private List<Trip> trips;
+    private ArrayList<TripPoint> trip;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -65,18 +69,11 @@ public class SearchResultActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.search_result);
-        /*int count = 0;
-        Resources res = getResources();
-        String tripsFound = res.getQuantityString(R.plurals.search_result, count, count);
-        TextView txt = (TextView) findViewById(R.id.result_count);
-        txt.setText(tripsFound);*/
 
-        // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandList);
 
-        // preparing list data REMPLACER ICI PAR UN APPEL A LA BDD
-        List<Trip> trips = new ArrayList<Trip>();
-        ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
+        trips = new ArrayList<Trip>();
+        trip = new ArrayList<TripPoint>();
         trip.add(new TripPoint(49.222833,-0.370879));
         trip.add(new TripPoint(49.213391,-0.375315));
         trips.add(new Trip("Chez Julien", "Chez Damien", trip, "02:10", "03:15"));
@@ -228,7 +225,11 @@ public class SearchResultActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = new JSONArray(new String(responseBody));
                     for(int i=0;i<jsonArray.length();i++){
-
+                        trip = new ArrayList<TripPoint>();
+                        JSONObject jsonTMP = jsonArray.getJSONObject(i);
+                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
+                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
+                        trips.add(new Trip(jsonTMP.getString("departureAddress"), jsonTMP.getString("arrivalAddress"), trip, jsonTMP.getString("departureHour"), jsonTMP.getString("arrivalHour")));
                     }
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -247,5 +248,42 @@ public class SearchResultActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void invokeWS(JSONObject jsonParams){
+        AsyncHttpClient client = new AsyncHttpClient();
+        try {
+            StringEntity entity = new StringEntity(jsonParams.toString());
+
+
+            client.get(getApplicationContext(), urlGetTrajet, entity, "application/json",new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+                        for(int i =0;i<jsonArray.length();i++){
+
+                        }
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                    if(statusCode == 404){
+                        Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+                    }
+                    else if(statusCode == 500){
+                        Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Unexpected Error occcured! "+statusCode + "  "+error, Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

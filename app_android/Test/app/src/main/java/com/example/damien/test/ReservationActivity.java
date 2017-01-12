@@ -17,6 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ReservationActivity extends Activity {
 
@@ -67,7 +69,7 @@ public class ReservationActivity extends Activity {
             jsonParams.put("lon", addressDeparture.get(0).getLongitude());
             jsonParams.put("lat", addressArrival.get(0).getLatitude());
             jsonParams.put("lon", addressArrival.get(0).getLongitude());
-            //invokeWS(params);
+            invokeWS(jsonParams);
 
 
         }catch(IOException e){
@@ -81,9 +83,13 @@ public class ReservationActivity extends Activity {
 
     }
 
-    public void invokeWS(RequestParams params){
+    public void invokeWS(JSONObject jsonParams){
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(urlReservation, params, new AsyncHttpResponseHandler() {
+        try {
+            StringEntity entity = new StringEntity(jsonParams.toString());
+
+
+        client.post(getApplicationContext(), urlReservation, entity, "application/json",new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
@@ -102,6 +108,9 @@ public class ReservationActivity extends Activity {
                 }
             }
         });
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void navigationToReservationView(){

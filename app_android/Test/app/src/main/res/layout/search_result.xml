@@ -4,10 +4,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<TextView
+
+
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/result_count" />-->
+        android:layout_height="50dp"
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/bandeauaccio"
+        android:id="@+id/imageView3" />
 
     <org.osmdroid.views.MapView android:id="@+id/map"
         android:layout_width="fill_parent"

@@ -10,8 +10,8 @@
         android:layout_height="149dp"
         app:srcCompat="@drawable/bandeaudaccueil"
         android:id="@+id/imageView"
-        android:layout_marginBottom="30dp"/>
-
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -70,23 +70,33 @@
             android:onClick="onLogin"
             android:layout_weight="0.20" />
 
-    </LinearLayout>
 
+    </LinearLayout>
     <LinearLayout
-        android:layout_gravity="bottom|center"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bandeaudubacavecvoiture"
+            android:id="@+id/imageView5"
+            android:layout_weight="1" />
+
         <Button
-            android:textColor="@color/white"
-            android:background="@color/colorPrimary"
-            android:text="@string/no_account"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:id="@+id/button"
-            android:layout_gravity="bottom|center"
-            android:onClick="navigationToRegisterPage"
-            android:layout_weight="0.20" />
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:text="@string/no_account"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:id="@+id/button"
+        android:layout_gravity="bottom"
+        android:onClick="navigationToRegisterPage" />
     </LinearLayout>
+
+
 </LinearLayout>
