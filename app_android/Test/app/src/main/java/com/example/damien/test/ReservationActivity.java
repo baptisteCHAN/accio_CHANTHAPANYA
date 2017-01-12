@@ -7,7 +7,10 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -31,6 +34,8 @@ public class ReservationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reservation_page);
+        TimePicker timePicker = (TimePicker) findViewById(R.id.time_arrival);
+        timePicker.setIs24HourView(true);
     }
 
     public void onReservation(View view){
@@ -103,6 +108,19 @@ public class ReservationActivity extends Activity {
         Intent RegisterIntent = new Intent(getApplicationContext(),loginActivity.class);
         RegisterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(RegisterIntent);
+    }
+
+    public void checkboxClicked(View view){
+        CheckBox checkBox = (CheckBox) findViewById(R.id.go_now_checkbox);
+        DatePicker datePicker = (DatePicker) findViewById(R.id.date_arrival);
+        TimePicker timePicker = (TimePicker) findViewById(R.id.time_arrival);
+        if (checkBox.isChecked()){
+            datePicker.setVisibility(View.GONE);
+            timePicker.setVisibility(View.GONE);
+        }else{
+            datePicker.setVisibility(View.VISIBLE);
+            timePicker.setVisibility(View.VISIBLE);
+        }
     }
 }
 

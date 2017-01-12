@@ -76,6 +76,27 @@
                 android:layout_weight="0.56" />
         </LinearLayout>
 
+
+        <CheckBox
+            android:text="Partir le plus tôt possible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="checkboxClicked"
+            android:id="@+id/go_now_checkbox" />
+
+        <DatePicker
+            android:layout_width="match_parent"
+            android:layout_height="106dp"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            android:id="@+id/date_arrival" />
+
+        <TimePicker
+            android:layout_width="match_parent"
+            android:layout_height="82dp"
+            android:timePickerMode="spinner"
+            android:id="@+id/time_arrival" />
+
         <Button
             android:textColor="@color/white"
             android:background="@color/colorPrimary"

@@ -52,8 +52,21 @@ public class ReservationView extends AppCompatActivity {
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandList);
 
-        // preparing list data
-        prepareListData();
+        // preparing list data REMPLACER ICI PAR UN APPEL A LA BDD
+        List<Trip> trips = new ArrayList<Trip>();
+        ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
+        trip.add(new TripPoint(49.222833,-0.370879));
+        trip.add(new TripPoint(49.213391,-0.375315));
+        trips.add(new Trip("Chez Julien", "Chez Damien", trip, "02:10", "03:15"));
+
+
+        trip = new ArrayList<TripPoint>();
+        trip.add(new TripPoint(49.198736,-0.36414));
+        trip.add(new TripPoint(49.186641,-0.366817));
+        trips.add(new Trip("Chez Julien", "Chez Damien", trip));
+
+        trips.add(new Trip("Chez Julien", "Chez Damien", trip));
+        prepareListData(trips);
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
@@ -69,7 +82,6 @@ public class ReservationView extends AppCompatActivity {
 
                 mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
                 mMapView.setBuiltInZoomControls(true);
-
                 mMapController.setZoom(15);
 
                 ArrayList<TripPoint> points = childTrip.getPoints();
@@ -121,35 +133,19 @@ public class ReservationView extends AppCompatActivity {
     /*
     * Preparing the list data
     */
-    private void prepareListData() {
+    private void prepareListData(List<Trip> trips) {
+
+
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<Trip>>();
 
         // Adding child data
-        listDataHeader.add("Trajet 1 : (16:35) --> (17:35)");
-        listDataHeader.add("Trajet 2 : (16:40) --> (17:50)");
-        listDataHeader.add("Trajet 3 : (16:35) --> (17:59)");
-
-        // Adding child data
-        List<Trip> top250 = new ArrayList<Trip>();
-        ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
-        trip.add(new TripPoint(49.222833,-0.370879));
-        trip.add(new TripPoint(49.213391,-0.375315));
-        top250.add(new Trip("Chez Julien", "Chez Damien", trip));
-
-
-        trip = new ArrayList<TripPoint>();
-        trip.add(new TripPoint(49.198736,-0.36414));
-        trip.add(new TripPoint(49.186641,-0.366817));
-        List<Trip> nowShowing = new ArrayList<Trip>();
-        nowShowing.add(new Trip("Chez Julien", "Chez Damien", trip));
-
-        List<Trip> comingSoon = new ArrayList<Trip>();
-        comingSoon.add(new Trip("Chez Julien", "Chez Damien", trip));
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        for(Trip trip : trips){
+            listDataHeader.add(trip.getDepartureTime()+" --> " + trip.getArrivalTime());
+            ArrayList<Trip> tripList = new ArrayList<Trip>();
+            tripList.add(trip);
+            listDataChild.put(trip.getDepartureTime()+" --> " + trip.getArrivalTime(), tripList);
+        }
     }
 
     public void onResume() {
