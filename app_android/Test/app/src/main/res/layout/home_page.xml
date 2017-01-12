@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:id="@+id/buttonReservation"
-            android:onClick="navigationtoReservationPage"
+            android:onClick="navigationToReservationPage"
             android:layout_weight="0.20"
             android:layout_marginBottom="20dp"/>
         <Button
@@ -50,6 +50,11 @@
             android:onClick="navigationToLoginPage"
             android:layout_weight="0.20"
             android:layout_marginBottom="20dp"/>
+
+        <org.osmdroid.views.MapView android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp" />
+
 
 
     </LinearLayout>

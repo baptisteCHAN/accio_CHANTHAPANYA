@@ -1,5 +1,10 @@
 package com.example.damien.test;
 
+import org.json.JSONArray;
+
+import org.json.JSONException;
+import org.osmdroid.bonuspack.routing.GraphHopperRoadManager;
+
 import java.util.ArrayList;
 
 /**
@@ -31,6 +36,7 @@ public class Trip {
     public String getArrival(){
         return _arrival;
     }
+
 
     public String toString(){
         return _departure + " --> " + _arrival;
