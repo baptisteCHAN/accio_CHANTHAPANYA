@@ -63,6 +63,13 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    public void navigationToMyReservationsPage(View view){
+        Intent homeIntent = new Intent(getApplicationContext(),ReservationView.class);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+
+    }
+
     public void navigationToReservationPage(View view){
         Intent homeIntent = new Intent(getApplicationContext(),ReservationActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

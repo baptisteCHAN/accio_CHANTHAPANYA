@@ -56,6 +56,8 @@ public class SearchResultActivity extends AppCompatActivity {
     HashMap<String, List<Trip>> listDataChild;
     private static final String urlGetTrajet = "http://192.168.12.79";
     private Trip currentTrip = null;
+    private MapView mMapView;
+    private MapController mMapController;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -86,14 +88,14 @@ public class SearchResultActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 final Trip childTrip = (Trip) listAdapter.getChild(groupPosition, childPosition);
                 currentTrip = childTrip;
-                MapView mMapView = (MapView) findViewById(R.id.map);
+
                 mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
                 mMapView.setBuiltInZoomControls(true);
-                MapController mMapController = (MapController) mMapView.getController();
+
                 mMapController.setZoom(15);
 
                 Button btn = (Button) findViewById(R.id.button_reserver);
-                btn.setClickable(true);
+                btn.setEnabled(true);
 
                 ArrayList<TripPoint> points = childTrip.getPoints();
 
@@ -114,9 +116,11 @@ public class SearchResultActivity extends AppCompatActivity {
 
                 GeoPoint gPt = new GeoPoint((departure.getLattitude() + arrival.getLattitude()) / 2, (departure.getLongitude() + arrival.getLongitude()) / 2);
                 mMapController.setCenter(gPt);
+
+
                 ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
-                waypoints.add(new GeoPoint(departure.getLongitude(),departure.getLattitude()));
-                waypoints.add(new GeoPoint(arrival.getLongitude(),arrival.getLattitude()));
+                waypoints.add(new GeoPoint(departure.getLattitude(),departure.getLongitude()));
+                waypoints.add(new GeoPoint(arrival.getLattitude(),arrival.getLongitude()));
 
                 GraphHopperRoadManager roadManager = new GraphHopperRoadManager("1170b7cf-8fd0-4796-86f5-de3ca31c5d45",false);
                 Road road = roadManager.getRoad(waypoints);
@@ -129,26 +133,33 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
-        MapView map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.setTileSource(TileSourceFactory.MAPNIK);
+        mMapController = (MapController) mMapView.getController();
+        GeoPoint gPt = new GeoPoint(49.172167, -0.365908);
+        mMapController.setZoom(13);
+        mMapController.setCenter(gPt);
 
         Button confirmbtn = (Button) findViewById(R.id.button_reserver);
+        confirmbtn.setEnabled(false);
         confirmbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SearchResultActivity.this);
-                alert.setTitle("Alert!!");
-                alert.setMessage("Are you sure to delete record");
-                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                alert.setTitle("Réservation!");
+                alert.setMessage("Etes-vous sûr de vouloir réserver ce trajet?");
+                alert.setPositiveButton("Oui, réserver maintenant!", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //do your work here
+                        //Lancer la résa
                         dialog.dismiss();
 
                     }
                 });
-                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton("Non", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
