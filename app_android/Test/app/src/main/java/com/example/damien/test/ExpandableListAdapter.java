@@ -10,16 +10,17 @@ package com.example.damien.test;
         import android.view.ViewGroup;
         import android.widget.BaseExpandableListAdapter;
         import android.widget.TextView;
+        import android.widget.Toast;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, List<Trip>> _listDataChild;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 HashMap<String, List<Trip>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -36,12 +37,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
 
-    //ICI UTILISER
+    //ICI ASSOCIER ONCLICK
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final Trip childTrip = (Trip) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -49,10 +50,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
+        TextView departureText = (TextView) convertView
+                .findViewById(R.id.departure);
 
-        txtListChild.setText(childText);
+        departureText.setText("Départ : " + childTrip.getDeparture());
+
+        TextView arrivalText = (TextView) convertView
+                .findViewById(R.id.arrival);
+
+        arrivalText.setText("Arrivée : " + childTrip.getArrival());
+
+
         return convertView;
     }
 

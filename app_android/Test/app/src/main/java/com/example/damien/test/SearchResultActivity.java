@@ -2,9 +2,12 @@ package com.example.damien.test;
 
 import android.app.DownloadManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +22,11 @@ import org.json.JSONObject;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,11 +43,11 @@ public class SearchResultActivity extends AppCompatActivity {
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    HashMap<String, List<Trip>> listDataChild;
     private static final String urlGetTrajet = "http://192.168.12.79";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.search_result);
@@ -61,6 +68,41 @@ public class SearchResultActivity extends AppCompatActivity {
         // setting list adapter
         expListView.setAdapter(listAdapter);
 
+        expListView.setClickable(true);
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Log.d("test", "CLICCLICCLIC");
+                final Trip childTrip = (Trip) listAdapter.getChild(groupPosition, childPosition);
+                MapView mMapView = (MapView) findViewById(R.id.map);
+                mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+                mMapView.setBuiltInZoomControls(true);
+                MapController mMapController = (MapController) mMapView.getController();
+                mMapController.setZoom(10);
+
+                ArrayList<TripPoint> points = childTrip.getPoints();
+
+                TripPoint departure = points.get(0);
+                TripPoint arrival = points.get(points.size() - 1);
+
+                mMapView.getOverlays().clear();
+
+                Marker startMarker = new Marker(mMapView);
+                startMarker.setPosition(new GeoPoint(departure.getLattitude(),departure.getLongitude()));
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                mMapView.getOverlays().add(startMarker);
+
+                Marker arrivalMarker = new Marker(mMapView);
+                arrivalMarker.setPosition(new GeoPoint(arrival.getLattitude(),arrival.getLongitude()));
+                arrivalMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                mMapView.getOverlays().add(arrivalMarker);
+
+                GeoPoint gPt = new GeoPoint((departure.getLattitude() + arrival.getLattitude()) / 2, (departure.getLongitude() + arrival.getLongitude()) / 2);
+                mMapController.setCenter(gPt);
+                return false;
+            }
+        });
+
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -71,7 +113,7 @@ public class SearchResultActivity extends AppCompatActivity {
     */
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataChild = new HashMap<String, List<Trip>>();
 
         // Adding child data
         listDataHeader.add("Trajet 1 : (16:35) --> (17:35)");
@@ -79,27 +121,35 @@ public class SearchResultActivity extends AppCompatActivity {
         listDataHeader.add("Trajet 3 : (16:35) --> (17:59)");
 
         // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
+        List<Trip> top250 = new ArrayList<Trip>();
+        ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
+        trip.add(new TripPoint(49.222833,-0.370879));
+        trip.add(new TripPoint(49.213391,-0.375315));
+        top250.add(new Trip("Chez Julien", "Chez Damien", trip));
 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
 
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
+        trip = new ArrayList<TripPoint>();
+        trip.add(new TripPoint(49.198736,-0.36414));
+        trip.add(new TripPoint(49.186641,-0.366817));
+        List<Trip> nowShowing = new ArrayList<Trip>();
+        nowShowing.add(new Trip("Chez Julien", "Chez Damien", trip));
+
+        List<Trip> comingSoon = new ArrayList<Trip>();
+        comingSoon.add(new Trip("Chez Julien", "Chez Damien", trip));
 
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+    }
 
     public void onResearch(){
         RequestParams params = new RequestParams();

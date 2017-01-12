@@ -2,11 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="55dip"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/ttt"
-        android:text="ttttt"
+        android:id="@+id/departure"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="12dip"
@@ -15,7 +14,7 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
 
     <TextView
-        android:id="@+id/lblListItem"
+        android:id="@+id/arrival"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="12dip"
