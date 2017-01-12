@@ -17,6 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +25,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class loginActivity extends AppCompatActivity {
 
-    private static final String urlLogin = "http://192.168.12.79";
+    private static final String urlLogin = "http://192.168.12.79:3000/users";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
 
@@ -72,38 +73,40 @@ public class loginActivity extends AppCompatActivity {
 
         if(TextUtils.isEmpty(loginET.getText().toString().trim()) || TextUtils.isEmpty(passwordET.getText().toString().trim())){
             Toast.makeText(getApplicationContext(), "Remplissez les champs", Toast.LENGTH_SHORT).show();
-            navigationToHomePage();
             return;
         }
 
         RequestParams params = new RequestParams();
-        params.put("login", loginET.getText());
-        params.put("password", passwordET.getText());
-        invokeWS(params);
+        invokeWS(params, loginET.getText().toString(), passwordET.getText().toString());
     }
 
-    public void  invokeWS(RequestParams params){
+    public void  invokeWS(RequestParams params, final String login, final String password){
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(urlLogin, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(),"Connexion réussie", Toast.LENGTH_SHORT).show();
                 try {
-                    JSONObject jsonArray = new JSONObject(new String(responseBody));
-                    SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
-                    SharedPreferences.Editor editor = idFile.edit();
-                    editor.putString("_id", jsonArray.get("_id").toString());
-                    editor.commit();
-
+                    JSONArray jsonArray = new JSONArray(new String(responseBody));
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject jsonTMP = jsonArray.getJSONObject(i);
+                        if(jsonTMP.getString("username").equals(login) && jsonTMP.getString("passwordSalt").equals(password)){
+                            SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
+                            SharedPreferences.Editor editor = idFile.edit();
+                            editor.putString("_id", jsonTMP.getString("_id"));
+                            editor.commit();
+                            Toast.makeText(getApplicationContext(),"Connexion réussie", Toast.LENGTH_SHORT).show();
+                            navigationToHomePage();
+                        }
+                    }
+                    Toast.makeText(getApplicationContext(), "Echec de la connexion", Toast.LENGTH_SHORT).show();
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
-                navigationToHomePage();
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
                 if(statusCode == 404){
-                    Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Error 404, Requested resource not found", Toast.LENGTH_LONG).show();
                 }
                 else if(statusCode == 500){
                     Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();

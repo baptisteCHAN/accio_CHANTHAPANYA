@@ -93,13 +93,14 @@ public class SearchResultActivity extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(2), comingSoon);
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+    }
 
     public void onResearch(){
         RequestParams params = new RequestParams();

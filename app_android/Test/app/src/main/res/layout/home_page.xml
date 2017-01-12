@@ -50,7 +50,7 @@
             android:onClick="navigationToLoginPage"
             android:layout_weight="0.20"
             android:layout_marginBottom="20dp"/>
-        
+
 
     </LinearLayout>
 
