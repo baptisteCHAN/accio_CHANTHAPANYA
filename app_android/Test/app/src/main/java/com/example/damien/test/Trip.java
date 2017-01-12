@@ -1,7 +1,9 @@
 package com.example.damien.test;
 
 import org.json.JSONArray;
+
 import org.json.JSONException;
+import java.util.ArrayList;
 
 /**
  * Created by Damien on 11/01/2017.
@@ -10,15 +12,19 @@ import org.json.JSONException;
 public class Trip {
     private String _departure;
     private String _arrival;
+    private ArrayList<TripPoint> _points;
 
     public Trip(){
         _departure = "Départ";
         _arrival = "Arrivée";
+        _points = new ArrayList<TripPoint>();
+        _points.add(new TripPoint());
     }
 
-    public Trip(String departure, String arrival){
+    public Trip(String departure, String arrival, ArrayList<TripPoint> tripPoints){
         _departure = departure;
         _arrival = arrival;
+        _points = tripPoints;
     }
 
     public String getDeparture(){
@@ -29,12 +35,21 @@ public class Trip {
         return _arrival;
     }
 
-    public Trip(JSONArray jsonArray){
+
+    public Trip(JSONArray jsonArray) {
 
         try {
-            _departure = jsonArray.getJSONObject(0).getString();
-        }catch(JSONException e){
+            _departure = jsonArray.getJSONObject(0).getString("");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public String toString(){
+        return _departure + " --> " + _arrival;
+    }
+
+    public ArrayList<TripPoint> getPoints(){
+        return _points;
     }
 }
