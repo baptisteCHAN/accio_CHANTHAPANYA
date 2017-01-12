@@ -19,9 +19,11 @@
         <activity android:name=".ReservationActivity" />
         <activity android:name=".loginActivity">
 
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
-        <!--<activity android:label="@string/search_result_activity" android:name=".SearchResultActivity">
-        </activity>-->
         <activity
             android:name=".SearchResultActivity"
             android:label="@string/search_result_activity" >
@@ -29,11 +31,7 @@
          </activity>
         <activity android:name=".ReservationView" />
         <activity android:name=".HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
