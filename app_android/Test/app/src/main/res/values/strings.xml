@@ -28,4 +28,5 @@
     <string name="logOut">se déconnecter</string>
     <string name="title_activity_maps">Map</string>
     <string name="idFile">idFile</string>
+    <string name="reserve">Réserver ce trajet!</string>
 </resources>

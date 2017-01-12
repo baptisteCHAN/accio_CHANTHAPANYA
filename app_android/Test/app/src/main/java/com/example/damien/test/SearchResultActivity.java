@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +47,7 @@ public class SearchResultActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<Trip>> listDataChild;
     private static final String urlGetTrajet = "http://192.168.12.79";
+    private Trip currentTrip = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -74,11 +77,15 @@ public class SearchResultActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Log.d("test", "CLICCLICCLIC");
                 final Trip childTrip = (Trip) listAdapter.getChild(groupPosition, childPosition);
+                currentTrip = childTrip;
                 MapView mMapView = (MapView) findViewById(R.id.map);
                 mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
                 mMapView.setBuiltInZoomControls(true);
                 MapController mMapController = (MapController) mMapView.getController();
-                mMapController.setZoom(10);
+                mMapController.setZoom(15);
+
+                Button btn = (Button) findViewById(R.id.button_reserver);
+                btn.setClickable(true);
 
                 ArrayList<TripPoint> points = childTrip.getPoints();
 

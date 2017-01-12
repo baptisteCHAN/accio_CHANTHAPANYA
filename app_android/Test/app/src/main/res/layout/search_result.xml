@@ -11,7 +11,16 @@
 
     <org.osmdroid.views.MapView android:id="@+id/map"
         android:layout_width="fill_parent"
-        android:layout_height="300dp" />
+        android:layout_height="250dp" />
+
+    <Button
+        android:id = "@+id/button_reserver"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/reserve"
+        android:clickable="false"/>
 
     <ExpandableListView
         android:groupIndicator="@drawable/selector_list"
