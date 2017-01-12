@@ -2,6 +2,7 @@ package com.example.damien.test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +30,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ReservationActivity extends Activity {
 
-    private static final String urlReservation = "http://192.168.12.79:3000";
+    private static String urlReservation = "http://192.168.12.79:3000/centrectrl/demande";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,8 @@ public class ReservationActivity extends Activity {
             return;
         }
 
+
+
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
             List<Address> addressDeparture = geocoder.getFromLocationName(departureAddressET.getText().toString(), 1);
@@ -63,24 +65,28 @@ public class ReservationActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "adresse d'arrivée inconnue", Toast.LENGTH_SHORT).show();
                 return;
             }
-            RequestParams params = new RequestParams();
+
             JSONObject jsonParams = new JSONObject();
-            jsonParams.put("lat", addressDeparture.get(0).getLatitude());
-            jsonParams.put("lon", addressDeparture.get(0).getLongitude());
-            jsonParams.put("lat", addressArrival.get(0).getLatitude());
-            jsonParams.put("lon", addressArrival.get(0).getLongitude());
-            invokeWS(jsonParams);
-
-
+            JSONObject departureJSON = new JSONObject();
+            departureJSON.put("lon", addressDeparture.get(0).getLongitude());
+            departureJSON.put("lat", addressDeparture.get(0).getLatitude());
+            jsonParams.put("depart", departureJSON);
+            JSONObject arrivalJSON = new JSONObject();
+            arrivalJSON.put("lon", addressArrival.get(0).getLongitude());
+            arrivalJSON.put("lat", addressArrival.get(0).getLatitude());
+            jsonParams.put("arrivee", arrivalJSON);
+            SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
+            if(idFile.contains("_id")){
+                jsonParams.put("userID",idFile.getString("_id",""));
+            }
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("newIte",jsonParams);
+            invokeWS(jsonParam);
         }catch(IOException e){
             e.printStackTrace();
         }catch(JSONException e){
             e.printStackTrace();
         }
-
-
-
-
     }
 
     public void invokeWS(JSONObject jsonParams){

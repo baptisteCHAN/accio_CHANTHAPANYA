@@ -1,13 +1,26 @@
 package com.example.damien.test;
 
+import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.bonuspack.routing.GraphHopperRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -18,9 +31,15 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ReservationView extends AppCompatActivity {
 
@@ -28,9 +47,11 @@ public class ReservationView extends AppCompatActivity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<Trip>> listDataChild;
-    private static final String urlGetTrajet = "http://192.168.12.79";
     private Trip currentTrip = null;
+    private static final String urlGetTrajet = "http://192.168.12.79:3000/centrectrl/";
     private MapView mMapView;
+    private ArrayList<TripPoint> trip;
+    private List<Trip> trips;
     private MapController mMapController;
 
     @Override
@@ -62,6 +83,8 @@ public class ReservationView extends AppCompatActivity {
         trips.add(new Trip("Chez Julien", "Chez Damien", trip));
 
         trips.add(new Trip("Chez Julien", "Chez Damien", trip));
+        RequestParams params = new RequestParams();
+        invokeWS(params);
         prepareListData(trips);
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
@@ -152,4 +175,41 @@ public class ReservationView extends AppCompatActivity {
         //Configuration.getInstance().save(this, prefs);
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
+
+
+    public void invokeWS(RequestParams params){
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(urlGetTrajet, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONArray jsonArray = new JSONArray(new String(responseBody));
+                    for(int i=0;i<jsonArray.length();i++){
+                        trip = new ArrayList<TripPoint>();
+                        JSONObject jsonTMP = jsonArray.getJSONObject(i);
+                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
+                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
+                        trips.add(new Trip(jsonTMP.getString("departureAddress"), jsonTMP.getString("arrivalAddress"), trip, jsonTMP.getString("departureHour"), jsonTMP.getString("arrivalHour")));
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                if(statusCode == 404){
+                    Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+                }
+                else if(statusCode == 500){
+                    Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),  "  "+error, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+
 }

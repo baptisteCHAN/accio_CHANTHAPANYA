@@ -3,6 +3,7 @@ package com.example.damien.test;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -56,7 +57,8 @@ public class SearchResultActivity extends AppCompatActivity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<Trip>> listDataChild;
-    private static final String urlGetTrajet = "http://192.168.12.79";
+    private static final String urlGetTrajet = "http://192.168.12.79:3000/centrectrl/";
+    private static String urlReservation = "http://192.168.12.79:3000/centrectrl/demande";
     private Trip currentTrip = null;
     private MapView mMapView;
     private MapController mMapController;
@@ -72,7 +74,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         expListView = (ExpandableListView) findViewById(R.id.expandList);
 
-        trips = new ArrayList<Trip>();
+        /*trips = new ArrayList<Trip>();
         trip = new ArrayList<TripPoint>();
         trip.add(new TripPoint(49.222833,-0.370879));
         trip.add(new TripPoint(49.213391,-0.375315));
@@ -84,7 +86,9 @@ public class SearchResultActivity extends AppCompatActivity {
         trip.add(new TripPoint(49.186641,-0.366817));
         trips.add(new Trip("Chez Julien", "Chez Damien", trip));
 
-        trips.add(new Trip("Chez Julien", "Chez Damien", trip));
+        trips.add(new Trip("Chez Julien", "Chez Damien", trip));*/
+        RequestParams params = new RequestParams();
+        invokeWS(params);
         prepareListData(trips);
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
@@ -211,11 +215,6 @@ public class SearchResultActivity extends AppCompatActivity {
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
 
-    public void onResearch(){
-        RequestParams params = new RequestParams();
-        invokeWS(params);
-    }
-
     public void invokeWS(RequestParams params){
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(urlGetTrajet, params, new AsyncHttpResponseHandler() {
@@ -250,24 +249,42 @@ public class SearchResultActivity extends AppCompatActivity {
         });
     }
 
-    public void invokeWS(JSONObject jsonParams){
+    public void onReservation(View view){
+
+        try {
+            JSONObject jsonParams = new JSONObject();
+            JSONObject departureJSON = new JSONObject();
+
+            ArrayList<TripPoint> tripPoints = currentTrip.getPoints();
+            departureJSON.put("lon", tripPoints.get(0).getLongitude());
+            departureJSON.put("lat", tripPoints.get(0).getLattitude());
+            jsonParams.put("depart", departureJSON);
+            JSONObject arrivalJSON = new JSONObject();
+            arrivalJSON.put("lon",tripPoints.get(tripPoints.size()-1).getLongitude());
+            arrivalJSON.put("lat", tripPoints.get(tripPoints.size()-1).getLattitude());
+            jsonParams.put("arrivee", arrivalJSON);
+            SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
+            if(idFile.contains("_id")){
+                jsonParams.put("userID",idFile.getString("_id",""));
+            }
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("newIte",jsonParams);
+            invokeWSJSON(jsonParam);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void invokeWSJSON(JSONObject jsonParams){
         AsyncHttpClient client = new AsyncHttpClient();
         try {
             StringEntity entity = new StringEntity(jsonParams.toString());
 
 
-            client.get(getApplicationContext(), urlGetTrajet, entity, "application/json",new AsyncHttpResponseHandler() {
+            client.post(getApplicationContext(), urlReservation, entity, "application/json",new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(new String(responseBody));
-                        for(int i =0;i<jsonArray.length();i++){
-
-                        }
-                    }catch(JSONException e){
-                        e.printStackTrace();
-                    }
-
+                    Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
