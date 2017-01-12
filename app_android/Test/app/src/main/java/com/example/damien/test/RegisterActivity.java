@@ -16,12 +16,19 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String urlRegister = "http://192.168.12.79:3000/user";
+    private static final String urlRegister = "http://192.168.12.79:3000/users/create";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
 
@@ -51,18 +58,24 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Different password", Toast.LENGTH_SHORT).show();
             return;
         }
-        RequestParams params = new RequestParams();
-        params.put("name", nameET.getText());
-        params.put("firstName", firstNameET.getText());
-        params.put("birthday", birthdateET.getText());
-        params.put("login", loginET.getText());
-        params.put("password", passwordET.getText());
-        invokeWS(params);
+        try {
+            JSONObject jsonParams = new JSONObject();
+            jsonParams.put("email", nameET.getText());
+            jsonParams.put("username", loginET.getText());
+            jsonParams.put("passwordSalt", passwordET.getText());
+            jsonParams.put("role", "0");
+            invokeWS(jsonParams);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
-    public void invokeWS(RequestParams params){
+    public void invokeWS(JSONObject jsonParams){
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(urlRegister, params, new AsyncHttpResponseHandler() {
+        try {
+            StringEntity entity = new StringEntity(jsonParams.toString());
+
+        client.post(getApplicationContext(), urlRegister, entity, "application/json", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
@@ -81,6 +94,9 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
     }
 
     public void navigationToHostPage(){
