@@ -3,6 +3,8 @@ package com.example.damien.test;
 import org.json.JSONArray;
 
 import org.json.JSONException;
+import org.osmdroid.bonuspack.routing.GraphHopperRoadManager;
+
 import java.util.ArrayList;
 
 /**
@@ -35,15 +37,6 @@ public class Trip {
         return _arrival;
     }
 
-
-    public Trip(JSONArray jsonArray) {
-
-        try {
-            _departure = jsonArray.getJSONObject(0).getString("");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public String toString(){
         return _departure + " --> " + _arrival;
