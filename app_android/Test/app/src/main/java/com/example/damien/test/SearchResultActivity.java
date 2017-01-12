@@ -1,13 +1,17 @@
 package com.example.damien.test;
 
+import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -21,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.osmdroid.bonuspack.routing.GraphHopperRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -28,6 +35,7 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.ArrayList;
@@ -52,7 +60,8 @@ public class SearchResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.search_result);
         /*int count = 0;
         Resources res = getResources();
@@ -75,7 +84,6 @@ public class SearchResultActivity extends AppCompatActivity {
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Log.d("test", "CLICCLICCLIC");
                 final Trip childTrip = (Trip) listAdapter.getChild(groupPosition, childPosition);
                 currentTrip = childTrip;
                 MapView mMapView = (MapView) findViewById(R.id.map);
@@ -106,12 +114,52 @@ public class SearchResultActivity extends AppCompatActivity {
 
                 GeoPoint gPt = new GeoPoint((departure.getLattitude() + arrival.getLattitude()) / 2, (departure.getLongitude() + arrival.getLongitude()) / 2);
                 mMapController.setCenter(gPt);
+                ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
+                waypoints.add(new GeoPoint(departure.getLongitude(),departure.getLattitude()));
+                waypoints.add(new GeoPoint(arrival.getLongitude(),arrival.getLattitude()));
+
+                GraphHopperRoadManager roadManager = new GraphHopperRoadManager("1170b7cf-8fd0-4796-86f5-de3ca31c5d45",false);
+                Road road = roadManager.getRoad(waypoints);
+                if(road.mStatus != Road.STATUS_OK)
+                    Toast.makeText(getApplicationContext(), "Error when loading the road - status="+road.mStatus, Toast.LENGTH_SHORT).show();
+                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+                mMapView.getOverlays().add(roadOverlay);
+                mMapView.invalidate();
                 return false;
             }
         });
 
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+
+        Button confirmbtn = (Button) findViewById(R.id.button_reserver);
+        confirmbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(SearchResultActivity.this);
+                alert.setTitle("Alert!!");
+                alert.setMessage("Are you sure to delete record");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do your work here
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+            }
+        });
 
     }
 
