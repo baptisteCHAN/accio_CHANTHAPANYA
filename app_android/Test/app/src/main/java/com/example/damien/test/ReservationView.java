@@ -78,22 +78,6 @@ public class ReservationView extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        // preparing list data REMPLACER ICI PAR UN APPEL A LA BDD
-       /* List<Trip> trips = new ArrayList<Trip>();
-        ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
-        trip.add(new TripPoint(49.222833,-0.370879));
-        trip.add(new TripPoint(49.213391,-0.375315));
-        trips.add(new Trip("Chez Julien", "Chez Damien", trip, "02:10", "03:15"));
-
-
-        trip = new ArrayList<TripPoint>();
-        trip.add(new TripPoint(49.198736,-0.36414));
-        trip.add(new TripPoint(49.186641,-0.366817));
-        trips.add(new Trip("Chez Julien", "Chez Damien", trip));
-
-        trips.add(new Trip("Chez Julien", "Chez Damien", trip));
-        RequestParams params = new RequestParams();
-        invokeWS(params);*/
         prepareListData(trips);
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
