@@ -1,5 +1,6 @@
 package com.example.damien.test;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -53,6 +54,7 @@ public class ReservationView extends AppCompatActivity {
     private ArrayList<TripPoint> trip;
     private List<Trip> trips;
     private MapController mMapController;
+    private ProgressDialog prgDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,6 +62,10 @@ public class ReservationView extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.reservation_view_page);
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("Recherche des trajets réservés ... ");
+        prgDialog.setCancelable(false);
+        prgDialog.show();
         /*int count = 0;
         Resources res = getResources();
         String tripsFound = res.getQuantityString(R.plurals.search_result, count, count);
@@ -146,7 +152,6 @@ public class ReservationView extends AppCompatActivity {
         GeoPoint gPt = new GeoPoint(49.172167, -0.365908);
         mMapController.setZoom(13);
         mMapController.setCenter(gPt);
-
     }
 
     /*
@@ -191,9 +196,11 @@ public class ReservationView extends AppCompatActivity {
                         trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
                         trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
                         trips.add(new Trip(jsonTMP.getString("departureAddress"), jsonTMP.getString("arrivalAddress"), trip, jsonTMP.getString("departureHour"), jsonTMP.getString("arrivalHour")));
+                        prgDialog.hide();
                     }
                 }catch (JSONException e){
                     e.printStackTrace();
+                    prgDialog.hide();
                 }
             }
             @Override
@@ -207,6 +214,7 @@ public class ReservationView extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(),  "  "+error, Toast.LENGTH_LONG).show();
                 }
+                prgDialog.hide();
             }
         });
     }

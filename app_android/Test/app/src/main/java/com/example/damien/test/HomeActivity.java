@@ -1,5 +1,6 @@
 package com.example.damien.test;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -25,12 +26,14 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
-    MapView map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+
+
+
     }
 
     public void navigationToMyReservationsPage(View view){

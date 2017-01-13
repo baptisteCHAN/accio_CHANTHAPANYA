@@ -1,6 +1,7 @@
 package com.example.damien.test;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,6 +30,7 @@ public class loginActivity extends AppCompatActivity {
 
     private static final String urlLogin = "http://192.168.12.79:3000/users";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private ProgressDialog prgDialog;
 
 
     @Override
@@ -52,6 +54,11 @@ public class loginActivity extends AppCompatActivity {
         if(idFile.contains("_id")){
             navigationToHomePage();
         }
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("Connexion en cours ... ");
+        prgDialog.setCancelable(false);
+
+
     }
 
     @Override
@@ -70,6 +77,7 @@ public class loginActivity extends AppCompatActivity {
     }
 
     public void onLogin(View view){
+        prgDialog.show();
         EditText loginET = (EditText)findViewById(R.id.login);
         EditText passwordET = (EditText)findViewById(R.id.password);
 
@@ -101,8 +109,10 @@ public class loginActivity extends AppCompatActivity {
                         }
                     }
                     Toast.makeText(getApplicationContext(), "Echec de la connexion", Toast.LENGTH_SHORT).show();
+                    prgDialog.hide();
                 }catch(JSONException e){
                     e.printStackTrace();
+                    prgDialog.hide();
                 }
             }
             @Override
@@ -116,6 +126,7 @@ public class loginActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "  "+error, Toast.LENGTH_LONG).show();
                 }
+                prgDialog.hide();
             }
         });
     }
