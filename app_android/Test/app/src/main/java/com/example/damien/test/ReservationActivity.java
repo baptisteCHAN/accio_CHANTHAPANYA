@@ -1,6 +1,7 @@
 package com.example.damien.test;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -32,10 +33,10 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ReservationActivity extends Activity {
 
-    private static final String urlGetTrajet = "http://192.168.12.79:3000/centrectrl/";
-    private static String urlReservation = "http://192.168.12.79:3000/centrectrl/demande";
+    private static String urlReservation = "http://192.168.12.79:3000/centerctrl/demande";
     private List<Trip> trips;
     private ArrayList<TripPoint> trip;
+    ProgressDialog prgDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +44,13 @@ public class ReservationActivity extends Activity {
         setContentView(R.layout.reservation_page);
         TimePicker timePicker = (TimePicker) findViewById(R.id.time_arrival);
         timePicker.setIs24HourView(true);
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("Connexion en cours ... ");
+        prgDialog.setCancelable(false);
     }
 
     public void onReservation(View view){
+        prgDialog.show();
         EditText arrivalAddressET = (EditText)findViewById(R.id.arrivalAddress);
         EditText departureAddressET = (EditText)findViewById(R.id.departureAddress);
 
@@ -81,10 +86,10 @@ public class ReservationActivity extends Activity {
             arrivalJSON.put("lat", addressArrival.get(0).getLatitude());
             jsonParams.put("arrivee", arrivalJSON);
             SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
-            if(idFile.contains("_id")){
-                jsonParams.put("userID",idFile.getString("_id",""));
-            }
             JSONObject jsonParam = new JSONObject();
+            if(idFile.contains("_id")){
+                jsonParam.put("userID",idFile.getString("_id",""));
+            }
             jsonParam.put("newIte",jsonParams);
             invokeWS(jsonParam);
         }catch(IOException e){
@@ -96,11 +101,13 @@ public class ReservationActivity extends Activity {
 
     public void invokeWS(JSONObject jsonParams){
         AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(500000);
         try {
             StringEntity entity = new StringEntity(jsonParams.toString());
         client.post(getApplicationContext(), urlReservation, entity, "application/json",new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                prgDialog.hide();
                 Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
                 try {
                     JSONObject jsonObject = new JSONObject(new String(responseBody));
@@ -114,6 +121,7 @@ public class ReservationActivity extends Activity {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                prgDialog.hide();
                 if(statusCode == 404){
                     Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
                 }

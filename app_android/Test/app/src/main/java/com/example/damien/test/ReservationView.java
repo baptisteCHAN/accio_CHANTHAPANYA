@@ -65,30 +65,18 @@ public class ReservationView extends AppCompatActivity {
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Recherche des trajets réservés ... ");
         prgDialog.setCancelable(false);
-        prgDialog.show();
-        /*int count = 0;
-        Resources res = getResources();
-        String tripsFound = res.getQuantityString(R.plurals.search_result, count, count);
-        TextView txt = (TextView) findViewById(R.id.result_count);
-        txt.setText(tripsFound);*/
-
-        // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expandList);
-        Bundle extras = getIntent().getExtras();
-        try {
-            JSONArray jsonArray = new JSONArray(extras.getString("jsonPOINTS"));
-            for (int i = 0; i < jsonArray.length(); i++) {
+        expListView = (ExpandableListView)findViewById(R.id.expandList);
+        SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
+        trips = new ArrayList<Trip>();
+            try {
+                JSONObject jsonTMP = new JSONObject(idFile.getString("jsonPOINTS",""));
                 trip = new ArrayList<TripPoint>();
-                JSONArray jsonPOINTArray = jsonArray.getJSONArray(i);
-                for(int j=0;j<jsonPOINTArray.length();j++) {
-                    JSONObject jsonTMP = jsonArray.getJSONObject(i);
-                    trip.add(new TripPoint(jsonTMP.getDouble("lat"), jsonTMP.getDouble("lon")));
-                }
-                trips.add(new Trip("arrivée", "départ", trip, "0", "0"));
+                trip.add(new TripPoint(jsonTMP.getJSONObject("depart").getDouble("lat"), jsonTMP.getJSONObject("depart").getDouble("lon")));
+                trip.add(new TripPoint(jsonTMP.getJSONObject("arrivee").getDouble("lat"), jsonTMP.getJSONObject("arrivee").getDouble("lon")));
+                trips.add(new Trip("départ", "arrivée", trip, "15:10", "15:30"));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
 
         // preparing list data REMPLACER ICI PAR UN APPEL A LA BDD
        /* List<Trip> trips = new ArrayList<Trip>();
@@ -189,10 +177,6 @@ public class ReservationView extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
 }

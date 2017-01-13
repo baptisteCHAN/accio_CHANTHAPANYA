@@ -37,16 +37,21 @@ import cz.msebera.android.httpclient.Header;
 public class HomeActivity extends AppCompatActivity {
 
     private ArrayList<TripPoint> trip;
+    private ProgressDialog prgDialog;
     private List<Trip> trips;
-    private static final String urlGetTrajet = "http://192.168.12.79:3000/centrectrl/demande";
+    private static final String urlGetTrajet = "http://192.168.12.79:3000/users";
+    Intent iReservationView;
+    Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-
-
-
+        iReservationView = new Intent(this, ReservationView.class);
+        extras = iReservationView.getExtras();
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("Connexion en cours ... ");
+        prgDialog.setCancelable(false);
     }
 
     public void navigationToMyReservationsPage(){
@@ -73,6 +78,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void onReservationView(View view){
+        prgDialog.show();
         RequestParams params = new RequestParams();
         invokeWS(params);
     }
@@ -82,14 +88,22 @@ public class HomeActivity extends AppCompatActivity {
         client.get(urlGetTrajet, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                prgDialog.hide();
                 Toast.makeText(getApplicationContext(),"connexion réussie", Toast.LENGTH_SHORT).show();
                 try {
-                    Intent iReservationView = new Intent(getApplicationContext(), ReservationView.class);
-                    Intent iReservation = new Intent(getApplicationContext(), ReservationActivity.class);
+
                     JSONArray jsonArray = new JSONArray(new String(responseBody));
-                    iReservation.putExtra("jsonPOINTS", jsonArray.toString());
-                    iReservationView.putExtra("jsonPOINTS", jsonArray.toString());
-                    navigationToMyReservationsPage();
+                    SharedPreferences idFile = getSharedPreferences(getString(R.string.idFile), MODE_PRIVATE);
+                    String id = idFile.getString("_id","");
+                    SharedPreferences.Editor editor = idFile.edit();
+                    for(int i = 0;i<jsonArray.length();i++) {
+                        if (jsonArray.getJSONObject(i).getString("_id").equals(id)) {
+                            String tmp = jsonArray.getJSONObject(i).getJSONObject("trajet").toString();
+                            editor.putString("jsonPOINTS",tmp);
+                            editor.commit();
+                            navigationToMyReservationsPage();
+                        }
+                    }
 
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -97,6 +111,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                prgDialog.hide();
                 if(statusCode == 404){
                     Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
                 }
