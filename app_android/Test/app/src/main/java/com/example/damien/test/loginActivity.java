@@ -57,8 +57,6 @@ public class loginActivity extends AppCompatActivity {
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Connexion en cours ... ");
         prgDialog.setCancelable(false);
-
-
     }
 
     @Override
@@ -95,6 +93,7 @@ public class loginActivity extends AppCompatActivity {
         client.get(urlLogin, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                prgDialog.hide();
                 try {
                     JSONArray jsonArray = new JSONArray(new String(responseBody));
                     for(int i=0;i<jsonArray.length();i++){
@@ -109,7 +108,6 @@ public class loginActivity extends AppCompatActivity {
                         }
                     }
                     Toast.makeText(getApplicationContext(), "Echec de la connexion", Toast.LENGTH_SHORT).show();
-                    prgDialog.hide();
                 }catch(JSONException e){
                     e.printStackTrace();
                     prgDialog.hide();
@@ -117,6 +115,7 @@ public class loginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                prgDialog.hide();
                 if(statusCode == 404){
                     Toast.makeText(getApplicationContext(), "Error 404, Requested resource not found", Toast.LENGTH_LONG).show();
                 }
@@ -126,7 +125,6 @@ public class loginActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "  "+error, Toast.LENGTH_LONG).show();
                 }
-                prgDialog.hide();
             }
         });
     }
