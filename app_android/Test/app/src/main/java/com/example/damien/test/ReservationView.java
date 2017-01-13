@@ -68,9 +68,24 @@ public class ReservationView extends AppCompatActivity {
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandList);
+        Bundle extras = getIntent().getExtras();
+        try {
+            JSONArray jsonArray = new JSONArray(extras.getString("jsonPOINTS"));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                trip = new ArrayList<TripPoint>();
+                JSONArray jsonPOINTArray = jsonArray.getJSONArray(i);
+                for(int j=0;j<jsonPOINTArray.length();j++) {
+                    JSONObject jsonTMP = jsonArray.getJSONObject(i);
+                    trip.add(new TripPoint(jsonTMP.getDouble("lat"), jsonTMP.getDouble("lon")));
+                }
+                trips.add(new Trip("arrivée", "départ", trip, "0", "0"));
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
 
         // preparing list data REMPLACER ICI PAR UN APPEL A LA BDD
-        List<Trip> trips = new ArrayList<Trip>();
+       /* List<Trip> trips = new ArrayList<Trip>();
         ArrayList<TripPoint> trip = new ArrayList<TripPoint>();
         trip.add(new TripPoint(49.222833,-0.370879));
         trip.add(new TripPoint(49.213391,-0.375315));
@@ -84,7 +99,7 @@ public class ReservationView extends AppCompatActivity {
 
         trips.add(new Trip("Chez Julien", "Chez Damien", trip));
         RequestParams params = new RequestParams();
-        invokeWS(params);
+        invokeWS(params);*/
         prepareListData(trips);
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
@@ -175,41 +190,5 @@ public class ReservationView extends AppCompatActivity {
         //Configuration.getInstance().save(this, prefs);
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
-
-
-    public void invokeWS(RequestParams params){
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(urlGetTrajet, params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(),"Enregistrement réussi", Toast.LENGTH_SHORT).show();
-                try {
-                    JSONArray jsonArray = new JSONArray(new String(responseBody));
-                    for(int i=0;i<jsonArray.length();i++){
-                        trip = new ArrayList<TripPoint>();
-                        JSONObject jsonTMP = jsonArray.getJSONObject(i);
-                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
-                        trip.add(new TripPoint(jsonTMP.getDouble("lat"),jsonTMP.getDouble("lon")));
-                        trips.add(new Trip(jsonTMP.getString("departureAddress"), jsonTMP.getString("arrivalAddress"), trip, jsonTMP.getString("departureHour"), jsonTMP.getString("arrivalHour")));
-                    }
-                }catch (JSONException e){
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
-                if(statusCode == 404){
-                    Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
-                }
-                else if(statusCode == 500){
-                    Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),  "  "+error, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
 
 }

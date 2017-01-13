@@ -1,6 +1,7 @@
 package com.example.damien.test;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,6 +30,8 @@ public class loginActivity extends AppCompatActivity {
 
     private static final String urlLogin = "http://192.168.12.79:3000/users";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    ProgressDialog prgDialog;
+
 
 
     @Override
@@ -52,6 +55,9 @@ public class loginActivity extends AppCompatActivity {
         if(idFile.contains("_id")){
             navigationToHomePage();
         }
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("patientez ...");
+        prgDialog.setCancelable(false);
     }
 
     @Override
@@ -70,6 +76,7 @@ public class loginActivity extends AppCompatActivity {
     }
 
     public void onLogin(View view){
+        prgDialog.show();
         EditText loginET = (EditText)findViewById(R.id.login);
         EditText passwordET = (EditText)findViewById(R.id.password);
 
@@ -87,6 +94,7 @@ public class loginActivity extends AppCompatActivity {
         client.get(urlLogin, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                prgDialog.hide();
                 try {
                     JSONArray jsonArray = new JSONArray(new String(responseBody));
                     for(int i=0;i<jsonArray.length();i++){
@@ -107,6 +115,7 @@ public class loginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error ) {
+                prgDialog.hide();
                 if(statusCode == 404){
                     Toast.makeText(getApplicationContext(), "Error 404, Requested resource not found", Toast.LENGTH_LONG).show();
                 }

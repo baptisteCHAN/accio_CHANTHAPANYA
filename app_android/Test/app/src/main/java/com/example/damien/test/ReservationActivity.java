@@ -18,10 +18,12 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +32,10 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ReservationActivity extends Activity {
 
+    private static final String urlGetTrajet = "http://192.168.12.79:3000/centrectrl/";
     private static String urlReservation = "http://192.168.12.79:3000/centrectrl/demande";
+    private List<Trip> trips;
+    private ArrayList<TripPoint> trip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,12 +98,18 @@ public class ReservationActivity extends Activity {
         AsyncHttpClient client = new AsyncHttpClient();
         try {
             StringEntity entity = new StringEntity(jsonParams.toString());
-
-
         client.post(getApplicationContext(), urlReservation, entity, "application/json",new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(),"Réservation réussie", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONObject jsonObject = new JSONObject(new String(responseBody));
+                    JSONArray response = jsonObject.getJSONArray("bestIte");
+                    Intent iReservationView = new Intent(getApplicationContext(), ReservationView.class);
+                    iReservationView.putExtra("jsonPOINTS", response.toString());
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
                 navigationToReservationView();
             }
             @Override
